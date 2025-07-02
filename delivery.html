@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Medication Delivery</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      margin: 0;
+      padding: 0;
+    }
+
+    .form-container {
+      max-width: 700px;
+      margin: 50px auto;
+      padding: 30px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-container h2 {
+      text-align: center;
+      margin-bottom: 25px;
+      color: #333;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .form-grid input,
+    .form-grid textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+
+    .form-grid textarea {
+      grid-column: 1 / span 2;
+      resize: vertical;
+    }
+
+    .form-container button {
+      margin-top: 20px;
+      width: 100%;
+      background-color: #28a745;
+      color: white;
+      padding: 14px;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .form-container button:hover {
+      background-color: #218838;
+    }
+
+    .error {
+      color: red;
+      text-align: center;
+      margin-top: 15px;
+    }
+
+    .success {
+      color: green;
+      text-align: center;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <h2>Request Medication Delivery</h2>
+    <form id="deliveryForm">
+      <div class="form-grid">
+        <input type="text" id="fullName" placeholder="Full Name" required />
+        <input type="text" id="idNumber" placeholder="ID Number" required />
+        <input type="email" id="email" placeholder="Email" required />
+        <input type="tel" id="phone" placeholder="Phone Number" required />
+        <input type="text" id="homeAddress" placeholder="Home Address" required />
+        <input type="text" id="village" placeholder="Village Name" required />
+        <input type="text" id="province" placeholder="Province" required />
+        <input type="text" id="postalCode" placeholder="Postal Code" required />
+        <input type="text" id="medication" placeholder="Medication Name" required />
+        <textarea id="notes" placeholder="Additional notes" rows="3"></textarea>
+      </div>
+      <button type="submit">Submit Request</button>
+    </form>
+    <p id="confirmationMsg"></p>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+    import { getFirestore, collection, query, where, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB2ZHgJFXQErQvGNz8CsWmmVokMkkdIk8g",
+      authDomain: "health-solution-4f8c1.firebaseapp.com",
+      projectId: "health-solution-4f8c1",
+      storageBucket: "health-solution-4f8c1.appspot.com",
+      messagingSenderId: "48722449078",
+      appId: "1:48722449078:web:78771cf1f278fc11068c17"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const form = document.getElementById("deliveryForm");
+    const message = document.getElementById("confirmationMsg");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const fullName = document.getElementById("fullName").value.trim();
+      const idNumber = document.getElementById("idNumber").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+      const homeAddress = document.getElementById("homeAddress").value.trim();
+      const village = document.getElementById("village").value.trim();
+      const province = document.getElementById("province").value.trim();
+      const postalCode = document.getElementById("postalCode").value.trim();
+      const medication = document.getElementById("medication").value.trim();
+      const notes = document.getElementById("notes").value.trim();
+
+      message.textContent = "";
+      message.className = "";
+
+      try {
+        const q = query(collection(db, "medicationRequests"), where("idNumber", "==", idNumber));
+        const querySnapshot = await getDocs(q);
+
+        if (!querySnapshot.empty) {
+          message.textContent = "This ID number has already submitted a request.";
+          message.className = "error";
+          return;
+        }
+
+        await addDoc(collection(db, "medicationRequests"), {
+          fullName,
+          idNumber,
+          email,
+          phone,
+          homeAddress,
+          village,
+          province,
+          postalCode,
+          medication,
+          notes,
+          submittedAt: new Date()
+        });
+
+        message.textContent = "Thank you! Your medication delivery request was submitted.";
+        message.className = "success";
+        form.reset();
+      } catch (err) {
+        message.textContent = "Error submitting request: " + err.message;
+        message.className = "error";
+      }
+    });
+  </script>
+</body>
+</html>
