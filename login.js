@@ -16,7 +16,7 @@ loginForm.addEventListener("submit", async (e) => {
     messageEl.textContent = `Welcome, ${user.displayName || 'User'}!`;
     loginForm.reset();
     // Redirect to dashboard or homepage
-    // window.location.href = "dashboard.html";
+    window.location.href = "dashboard.html";
   } catch (error) {
     messageEl.textContent = error.message;
   }
