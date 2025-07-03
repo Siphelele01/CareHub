@@ -31,25 +31,28 @@
         <h3>Find Facilities</h3>
         <p>Locate nearby clinics and hospitals.</p>
         <button id="btn-facilities">Go to Find Facilities</button>
+        
       </div>
       <div class="card">
-        <h3>Virtual Consultations</h3>
-        <!-- Add this below the card grid -->
-        <div id="form-container"></div>
- 
-        <p>Connect with doctors from home.</p>
-        <button id="btn-consultations">Go to Virtual Consultations</button>
-      </div>
+  <h3>Virtual Consultations</h3>
+  <p>Connect with doctors from home.</p>
+  <button id="btn-consultations" onclick="window.location.href='appointment.html'">Go to Virtual Consultations</button>
+</div>
+
+     <div class="card">
+  <h3>Health Education</h3>
+  <p>Learn about maternal and child health.</p>
+  <button onclick="window.location.href='health-education.html'">Go to Health Education</button>
+</div>
+
+
       <div class="card">
-        <h3>Health Education</h3>
-        <p>Learn about maternal and child health.</p>
-        <button>Go to Health Education</button>
-      </div>
-      <div class="card">
-        <h3>Symptom Checker</h3>
-        <p>Get a preliminary health assessment.</p>
-        <button>Go to Symptom Checker</button>
-      </div>
+  <h3>Symptom Checker</h3>
+  <p>Get a preliminary health assessment.</p>
+  <input type="file" id="image-upload" accept="image/*">
+  <button id="btn-analyze">Analyze Symptoms</button>
+  <div id="analysis-result" style="margin-top: 10px;"></div>
+</div>
       <div class="card">
         <h3>Set Reminders</h3>
         <p>For checkups and vaccinations.</p>
@@ -66,5 +69,48 @@
     </div>
   </div>
   <script src="script.js"></script>
+  <script>
+  document.getElementById('btn-facilities').addEventListener('click', function () {
+    // Redirect to Google Maps with a search for healthcare facilities in Mthatha
+    const mapsUrl = "https://www.google.com/maps/search/health+care+facilities+near+Mthatha/";
+    window.open(mapsUrl, "_blank");
+  });
+  document.getElementById('btn-analyze').addEventListener('click', function () {
+    const fileInput = document.getElementById('image-upload');
+    const resultDiv = document.getElementById('analysis-result');
+
+    if (!fileInput.files || fileInput.files.length === 0) {
+      resultDiv.innerHTML = "<span style='color:red;'>Please upload an image first.</span>";
+      return;
+    }
+
+    const file = fileInput.files[0];
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+      const imgData = e.target.result;
+
+      // Simulated analysis - replace this with real API call
+      resultDiv.innerHTML = `
+        <p><strong>Image uploaded successfully.</strong></p>
+        <p><em>Analyzing...</em></p>
+      `;
+
+      // Simulate analysis delay
+      setTimeout(() => {
+        resultDiv.innerHTML += `
+          <p><strong>Preliminary Results:</strong></p>
+          <ul>
+            <li>Possible skin irritation detected</li>
+            <li>No visible inflammation</li>
+            <li>Recommend seeing a dermatologist</li>
+          </ul>
+        `;
+      }, 2000);
+    };
+
+    reader.readAsDataURL(file);
+  });
+</script>
 </body>
 </html>
