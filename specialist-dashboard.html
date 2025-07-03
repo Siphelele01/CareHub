@@ -1,95 +1,715 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Specialist Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f6f8;
+    :root {
+      --primary-color: #4361ee;
+      --secondary-color: #3f37c9;
+      --accent-color: #4895ef;
+      --light-color: #f8f9fa;
+      --dark-color: #2b2d42;
+      --success-color: #4cc9f0;
+      --warning-color: #f8961e;
+      --danger-color: #f72585;
+      --gray-color: #adb5bd;
+      --sidebar-width: 280px;
+    }
+    
+    * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
-
-    header {
-      background-color: #0077cc;
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f5f7ff;
+      color: var(--dark-color);
+      line-height: 1.6;
+    }
+    
+    .dashboard-container {
+      display: flex;
+      min-height: 100vh;
+    }
+    
+    /* Sidebar Styling */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
       color: white;
-      padding: 1rem 2rem;
+      padding: 2rem 1.5rem;
+      position: fixed;
+      height: 100vh;
+      box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+      z-index: 10;
+      transition: all 0.3s ease;
+    }
+    
+    .sidebar h2 {
+      color: white;
+      margin-bottom: 2.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      font-size: 1.5rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+    }
+    
+    .sidebar h2::before {
+      content: "⚕️";
+      margin-right: 10px;
+    }
+    
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+    }
+    
+    .sidebar li {
+      padding: 0.8rem 1rem;
+      margin-bottom: 0.5rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      font-weight: 500;
+    }
+    
+    .sidebar li::before {
+      content: "";
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      background-color: white;
+      border-radius: 50%;
+      margin-right: 12px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .sidebar li:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+      transform: translateX(5px);
+    }
+    
+    .sidebar li:hover::before {
+      opacity: 1;
+    }
+    
+    .sidebar li.active {
+      background-color: rgba(255, 255, 255, 0.2);
+      font-weight: 600;
+      transform: translateX(5px);
+    }
+    
+    .sidebar li.active::before {
+      opacity: 1;
+    }
+    
+    /* Main Content Styling */
+    .main-content {
+      flex: 1;
+      padding: 2.5rem;
+      margin-left: var(--sidebar-width);
+      transition: all 0.3s ease;
+    }
+    
+    .content-section {
+      display: none;
+      animation: fadeIn 0.5s ease;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .content-section.active {
+      display: block;
+    }
+    
+    h1 {
+      color: var(--dark-color);
+      margin-bottom: 1.5rem;
+      font-weight: 600;
+      position: relative;
+      padding-bottom: 0.5rem;
+    }
+    
+    h1::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 60px;
+      height: 4px;
+      background: linear-gradient(to right, var(--primary-color), var(--accent-color));
+      border-radius: 2px;
+    }
+    
+    /* Dashboard Section */
+    #dashboard-section p {
+      color: var(--gray-color);
+      margin-bottom: 2rem;
+    }
+    
+    .stats-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+    
+    .stat-card {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .stat-card h3 {
+      font-size: 1rem;
+      color: var(--gray-color);
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+    
+    .stat-card .value {
+      font-size: 2rem;
+      font-weight: 600;
+      color: var(--primary-color);
+      margin-bottom: 0.5rem;
+    }
+    
+    .stat-card .change {
+      font-size: 0.875rem;
+      display: flex;
+      align-items: center;
+    }
+    
+    .stat-card .change.positive {
+      color: var(--success-color);
+    }
+    
+    .stat-card .change.negative {
+      color: var(--danger-color);
+    }
+    
+    /* Appointments Section */
+    .appointments-list {
+      margin-top: 2rem;
+      display: grid;
+      gap: 1.5rem;
+    }
+    
+    .appointment-card {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+      border-left: 4px solid var(--primary-color);
+    }
+    
+    .appointment-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .appointment-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      margin-bottom: 1rem;
     }
-
-    header h1 {
-      margin: 0;
-      font-size: 1.5rem;
+    
+    .appointment-name {
+      font-weight: 600;
+      font-size: 1.2rem;
+      color: var(--dark-color);
     }
-
-    header button {
-      background-color: white;
-      color: #0077cc;
+    
+    .appointment-date {
+      color: var(--gray-color);
+      font-size: 0.9rem;
+    }
+    
+    .appointment-specialist {
+      background-color: rgba(67, 97, 238, 0.1);
+      color: var(--primary-color);
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      display: inline-block;
+      margin: 0.5rem 0;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+    
+    .appointment-card p {
+      margin: 0.8rem 0;
+      color: #555;
+    }
+    
+    .contact-info {
+      display: flex;
+      gap: 1rem;
+      font-size: 0.9rem;
+      color: var(--gray-color);
+      margin: 0.8rem 0;
+    }
+    
+    .status-pending {
+      color: var(--warning-color);
+      font-weight: 600;
+      background-color: rgba(248, 150, 30, 0.1);
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+    }
+    
+    .status-confirmed {
+      color: var(--success-color);
+      font-weight: 600;
+      background-color: rgba(76, 201, 240, 0.1);
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+    }
+    
+    .status-cancelled {
+      color: var(--danger-color);
+      font-weight: 600;
+      background-color: rgba(247, 37, 133, 0.1);
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+    }
+    
+    .action-buttons {
+      margin-top: 1rem;
+      display: flex;
+      gap: 0.8rem;
+    }
+    
+    .action-buttons button {
+      padding: 0.5rem 1.2rem;
       border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 5px;
+      border-radius: 6px;
       cursor: pointer;
-      font-weight: bold;
+      font-weight: 500;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-
-    main {
+    
+    .action-buttons button i {
+      margin-right: 6px;
+    }
+    
+    .btn-confirm {
+      background-color: var(--success-color);
+      color: white;
+    }
+    
+    .btn-confirm:hover {
+      background-color: #3ab7d8;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(76, 201, 240, 0.3);
+    }
+    
+    .btn-cancel {
+      background-color: var(--danger-color);
+      color: white;
+    }
+    
+    .btn-cancel:hover {
+      background-color: #e5177b;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(247, 37, 133, 0.3);
+    }
+    
+    /* Profile Section */
+    .profile-section {
+      background: white;
       padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      max-width: 700px;
+      margin-top: 1.5rem;
     }
-
-    .card {
-      background-color: white;
-      padding: 1.5rem;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    
+    .profile-field {
+      margin-bottom: 1.5rem;
     }
-
-    .card h2 {
+    
+    .profile-field label {
+      display: block;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      color: var(--gray-color);
+      font-size: 0.9rem;
+    }
+    
+    .profile-field span {
+      display: inline-block;
+      padding: 0.8rem 1rem;
+      background: #f8f9fa;
+      border-radius: 8px;
+      width: 100%;
+      border-left: 3px solid var(--primary-color);
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 992px) {
+      .sidebar {
+        width: 80px;
+        padding: 1.5rem 0.5rem;
+        overflow: hidden;
+      }
+      
+      .sidebar h2 {
+        font-size: 0;
+        padding: 0;
+        margin-bottom: 2rem;
+        justify-content: center;
+      }
+      
+      .sidebar h2::before {
+        margin-right: 0;
+        font-size: 1.5rem;
+      }
+      
+      .sidebar li {
+        justify-content: center;
+        padding: 0.8rem 0;
+      }
+      
+      .sidebar li span {
+        display: none;
+      }
+      
+      .sidebar li::before {
+        display: none;
+      }
+      
+      .main-content {
+        margin-left: 80px;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .main-content {
+        padding: 1.5rem;
+      }
+      
+      .stats-container {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    /* Animation for cards */
+    @keyframes cardEntrance {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .appointment-card {
+      animation: cardEntrance 0.5s ease-out;
+      animation-fill-mode: backwards;
+    }
+    
+    /* No appointments message */
+    .no-appointments {
+      text-align: center;
+      padding: 2rem;
+      color: var(--gray-color);
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+    
+    .no-appointments i {
+      font-size: 2rem;
       margin-bottom: 1rem;
-      color: #333;
-    }
-
-    .request {
-      padding: 1rem;
-      margin-bottom: 1rem;
-      border-left: 5px solid #0077cc;
-      background-color: #f9f9f9;
-      border-radius: 5px;
-    }
-
-    .request p {
-      margin: 0.3rem 0;
+      color: var(--primary-color);
     }
   </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-
-  <header>
-    <h1>Specialist Dashboard</h1>
-    <button onclick="logout()">Logout</button>
-  </header>
-
-  <main>
-    <section class="card">
-      <h2>Medication Delivery Requests</h2>
-      <div id="requests-container">
-        <!-- Requests will be displayed here -->
+  <div class="dashboard-container">
+    <div class="sidebar">
+      <h2>HealthReach</h2>
+      <ul>
+        <li class="active" data-section="dashboard"><i class="fas fa-home"></i> <span>Dashboard</span></li>
+        <li data-section="appointments"><i class="fas fa-calendar-check"></i> <span>Appointments</span></li>
+        <li data-section="patients"><i class="fas fa-user-injured"></i> <span>Patients</span></li>
+        <li data-section="profile"><i class="fas fa-user-circle"></i> <span>Profile</span></li>
+        <li data-section="logout"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></li>
+      </ul>
+    </div>
+    
+    <div class="main-content">
+      <!-- Dashboard Section -->
+      <div id="dashboard-section" class="content-section active">
+        <h1>Welcome, Dr. <span id="specialist-name"></span></h1>
+        <p>Today's date: <span id="today-date"></span></p>
+        <div class="stats-container">
+          <div class="stat-card">
+            <h3>Today's Appointments</h3>
+            <div class="value">12</div>
+            <div class="change positive">
+              <i class="fas fa-arrow-up"></i> 2 from yesterday
+            </div>
+          </div>
+          <div class="stat-card">
+            <h3>Pending Requests</h3>
+            <div class="value">5</div>
+            <div class="change negative">
+              <i class="fas fa-arrow-down"></i> 1 from yesterday
+            </div>
+          </div>
+          <div class="stat-card">
+            <h3>Patient Messages</h3>
+            <div class="value">3</div>
+            <div class="change positive">
+              <i class="fas fa-arrow-up"></i> 1 new
+            </div>
+          </div>
+          <div class="stat-card">
+            <h3>Available Slots</h3>
+            <div class="value">8</div>
+            <div class="change">
+              <i class="fas fa-equals"></i> No change
+            </div>
+          </div>
+        </div>
       </div>
-    </section>
-  </main>
+      
+      <!-- Appointments Section -->
+      <div id="appointments-section" class="content-section">
+        <h1>Upcoming Appointments</h1>
+        <div class="appointments-list" id="appointments-container">
+          <!-- Appointments will be loaded here -->
+        </div>
+      </div>
+      
+      <!-- Patients Section -->
+      <div id="patients-section" class="content-section">
+        <h1>Patient Records</h1>
+        <p>Patient management content will go here.</p>
+      </div>
+      
+      <!-- Profile Section -->
+      <div id="profile-section" class="content-section">
+        <h1>Your Profile</h1>
+        <div class="profile-section">
+          <div class="profile-field">
+            <label>Full Name</label>
+            <span id="profile-name"></span>
+          </div>
+          <div class="profile-field">
+            <label>Specialization</label>
+            <span id="profile-specialization"></span>
+          </div>
+          <div class="profile-field">
+            <label>Email</label>
+            <span id="profile-email"></span>
+          </div>
+          <div class="profile-field">
+            <label>Account Created</label>
+            <span id="profile-created"></span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Logout Section (hidden) -->
+      <div id="logout-section" class="content-section"></div>
+    </div>
+  </div>
 
-  <!-- Load the dashboard logic -->
-  <script type="module" src="specialist-dashboard.js"></script>
-
-  <script>
-    function logout() {
-      alert("Logging out...");
-      // window.location.href = "login.html"; // optional redirect
+  <script type="module">
+    import { auth, db } from "./firebase-config.js";
+    import { collection, query, where, onSnapshot, updateDoc, doc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+    import { signOut } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+    
+    // Get specialist info from session
+    const specialist = JSON.parse(sessionStorage.getItem("specialist"));
+    if (!specialist) {
+      window.location.href = "specialist-login.html";
     }
+    
+    // Set profile information
+    document.getElementById("specialist-name").textContent = specialist.name;
+    document.getElementById("profile-name").textContent = specialist.name;
+    document.getElementById("profile-specialization").textContent = specialist.specialization;
+    document.getElementById("profile-email").textContent = specialist.email;
+    document.getElementById("profile-created").textContent = new Date().toLocaleDateString();
+    
+    // Set today's date
+    document.getElementById("today-date").textContent = new Date().toLocaleDateString('en-US', { 
+      weekday: 'long', 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
+    
+    // Sidebar navigation
+    const menuItems = document.querySelectorAll('.sidebar li');
+    const contentSections = document.querySelectorAll('.content-section');
+    
+    menuItems.forEach(item => {
+      item.addEventListener('click', function() {
+        const sectionId = this.dataset.section;
+        
+        // Handle logout separately
+        if (sectionId === 'logout') {
+          signOut(auth).then(() => {
+            sessionStorage.removeItem("specialist");
+            window.location.href = "specialist-login.html";
+          });
+          return;
+        }
+        
+        // Update active menu item
+        menuItems.forEach(i => i.classList.remove('active'));
+        this.classList.add('active');
+        
+        // Show corresponding section
+        contentSections.forEach(section => section.classList.remove('active'));
+        document.getElementById(`${sectionId}-section`).classList.add('active');
+        
+        // If appointments section is selected, load appointments
+        if (sectionId === 'appointments') {
+          loadAppointments();
+        }
+      });
+    });
+    
+    // Appointments functionality
+    let unsubscribeAppointments = null;
+    
+    function loadAppointments() {
+      const appointmentsContainer = document.getElementById("appointments-container");
+      
+      // If listener already exists, unsubscribe first
+      if (unsubscribeAppointments) {
+        unsubscribeAppointments();
+      }
+      
+      // Query appointments for this specialist
+      const q = query(
+        collection(db, "appointments"), 
+        where("specialistType", "==", specialist.specialization),
+        where("status", "in", ["Pending", "Confirmed"])
+      );
+      
+      // Real-time listener for appointments
+      unsubscribeAppointments = onSnapshot(q, (snapshot) => {
+        appointmentsContainer.innerHTML = "";
+        
+        if (snapshot.empty) {
+          appointmentsContainer.innerHTML = `
+            <div class="no-appointments">
+              <i class="far fa-calendar-times"></i>
+              <h3>No upcoming appointments</h3>
+              <p>You don't have any scheduled appointments at this time.</p>
+            </div>
+          `;
+          return;
+        }
+        
+        let delay = 0;
+        snapshot.forEach((doc) => {
+          const appointment = doc.data();
+          const appointmentDate = new Date(`${appointment.date}T${appointment.time}`);
+          const now = new Date();
+          
+          // Only show future appointments
+          if (appointmentDate > now) {
+            const appointmentCard = document.createElement("div");
+            appointmentCard.className = "appointment-card";
+            appointmentCard.style.animationDelay = `${delay}ms`;
+            appointmentCard.innerHTML = `
+              <div class="appointment-header">
+                <span class="appointment-name">${appointment.fullName}</span>
+                <span class="status-${appointment.status.toLowerCase()}">${appointment.status}</span>
+              </div>
+              <div class="appointment-date">
+                <i class="far fa-clock"></i> ${appointmentDate.toLocaleString()}
+              </div>
+              <div class="appointment-specialist">
+                <i class="fas fa-stethoscope"></i> ${appointment.specialistType}
+              </div>
+              <p><i class="fas fa-comment-medical"></i> ${appointment.reason}</p>
+              <div class="contact-info">
+                <span><i class="fas fa-envelope"></i> ${appointment.email}</span>
+                <span><i class="fas fa-phone"></i> ${appointment.phone}</span>
+              </div>
+              <div class="action-buttons">
+                <button class="btn-confirm" data-id="${doc.id}"><i class="fas fa-check"></i> Confirm</button>
+                <button class="btn-cancel" data-id="${doc.id}"><i class="fas fa-times"></i> Cancel</button>
+              </div>
+            `;
+            
+            appointmentsContainer.appendChild(appointmentCard);
+            delay += 100;
+          }
+        });
+        
+        // Add event listeners to buttons
+        document.querySelectorAll('.btn-confirm').forEach(button => {
+          button.addEventListener('click', async (e) => {
+            await updateAppointmentStatus(e.target.dataset.id, 'Confirmed');
+          });
+        });
+        
+        document.querySelectorAll('.btn-cancel').forEach(button => {
+          button.addEventListener('click', async (e) => {
+            await updateAppointmentStatus(e.target.dataset.id, 'Cancelled');
+          });
+        });
+      });
+    }
+    
+    async function updateAppointmentStatus(appointmentId, status) {
+      try {
+        await updateDoc(doc(db, "appointments", appointmentId), {
+          status: status
+        });
+      } catch (error) {
+        console.error("Error updating appointment: ", error);
+        alert("Failed to update appointment status. Please try again.");
+      }
+    }
+    
+    // Clean up listeners when page unloads
+    window.addEventListener('beforeunload', () => {
+      if (unsubscribeAppointments) {
+        unsubscribeAppointments();
+      }
+    });
   </script>
-
 </body>
 </html>
