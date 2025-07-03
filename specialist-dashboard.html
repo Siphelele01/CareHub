@@ -373,6 +373,80 @@
       width: 100%;
       border-left: 3px solid var(--primary-color);
     }
+
+    /* Medication Delivery Section */
+    .delivery-card {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      margin-bottom: 1.5rem;
+      border-left: 4px solid var(--accent-color);
+    }
+
+    .delivery-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .delivery-patient {
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: var(--dark-color);
+    }
+
+    .delivery-status {
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+
+    .status-pending {
+      background-color: rgba(248, 150, 30, 0.1);
+      color: var(--warning-color);
+    }
+
+    .status-processing {
+      background-color: rgba(72, 149, 239, 0.1);
+      color: var(--accent-color);
+    }
+
+    .status-delivered {
+      background-color: rgba(76, 201, 240, 0.1);
+      color: var(--success-color);
+    }
+
+    .delivery-details {
+      margin: 1rem 0;
+    }
+
+    .delivery-details p {
+      margin: 0.5rem 0;
+    }
+
+    .delivery-actions {
+      display: flex;
+      gap: 0.8rem;
+      margin-top: 1rem;
+    }
+
+    .btn-approve {
+      background-color: var(--success-color);
+      color: white;
+    }
+
+    .btn-reject {
+      background-color: var(--danger-color);
+      color: white;
+    }
+
+    .btn-update {
+      background-color: var(--accent-color);
+      color: white;
+    }
     
     /* Responsive Design */
     @media (max-width: 992px) {
@@ -454,6 +528,135 @@
       margin-bottom: 1rem;
       color: var(--primary-color);
     }
+
+    /* No deliveries message */
+    .no-deliveries {
+      text-align: center;
+      padding: 2rem;
+      color: var(--gray-color);
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      margin-top: 2rem;
+    }
+
+    .no-deliveries i {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      color: var(--primary-color);
+    }
+    .delivery-card {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      margin-bottom: 1.5rem;
+      border-left: 4px solid var(--accent-color);
+    }
+
+    .delivery-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .delivery-patient {
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: var(--dark-color);
+    }
+
+    .delivery-status {
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+
+    .status-pending {
+      background-color: rgba(248, 150, 30, 0.1);
+      color: var(--warning-color);
+    }
+
+    .status-approved {
+      background-color: rgba(72, 149, 239, 0.1);
+      color: var(--accent-color);
+    }
+
+    .status-rejected {
+      background-color: rgba(247, 37, 133, 0.1);
+      color: var(--danger-color);
+    }
+
+    .status-completed {
+      background-color: rgba(76, 201, 240, 0.1);
+      color: var(--success-color);
+    }
+
+    .delivery-details {
+      margin: 1rem 0;
+    }
+
+    .delivery-details p {
+      margin: 0.5rem 0;
+    }
+
+    .delivery-response {
+      margin: 1rem 0;
+    }
+
+    .response-textarea {
+      width: 100%;
+      padding: 0.8rem;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-family: 'Poppins', sans-serif;
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .delivery-actions {
+      display: flex;
+      gap: 0.8rem;
+      margin-top: 1rem;
+    }
+
+    .btn-approve {
+      background-color: var(--success-color);
+      color: white;
+    }
+
+    .btn-reject {
+      background-color: var(--danger-color);
+      color: white;
+    }
+
+    .btn-update {
+      background-color: var(--accent-color);
+      color: white;
+    }
+
+    .btn-complete {
+      background-color: var(--primary-color);
+      color: white;
+    }
+
+    .no-deliveries {
+      text-align: center;
+      padding: 2rem;
+      color: var(--gray-color);
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      margin-top: 2rem;
+    }
+
+    .no-deliveries i {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      color: var(--primary-color);
+    }
   </style>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
@@ -465,6 +668,7 @@
         <li class="active" data-section="dashboard"><i class="fas fa-home"></i> <span>Dashboard</span></li>
         <li data-section="appointments"><i class="fas fa-calendar-check"></i> <span>Appointments</span></li>
         <li data-section="patients"><i class="fas fa-user-injured"></i> <span>Patients</span></li>
+        <li data-section="medication-delivery"><i class="fas fa-pills"></i> <span>Medication Delivery</span></li>
         <li data-section="profile"><i class="fas fa-user-circle"></i> <span>Profile</span></li>
         <li data-section="logout"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></li>
       </ul>
@@ -519,6 +723,14 @@
       <div id="patients-section" class="content-section">
         <h1>Patient Records</h1>
         <p>Patient management content will go here.</p>
+      </div>
+
+      <!-- Medication Delivery Section -->
+      <div id="medication-delivery-section" class="content-section">
+        <h1>Medication Delivery Requests</h1>
+        <div id="delivery-requests-container">
+          <!-- Delivery requests will be loaded here -->
+        </div>
       </div>
       
       <!-- Profile Section -->
@@ -604,7 +816,178 @@
         if (sectionId === 'appointments') {
           loadAppointments();
         }
+        // If medication delivery section is selected, load delivery requests
+        else if (sectionId === 'medication-delivery') {
+          loadDeliveryRequests();
+        }
       });
+    });
+    // Medication Delivery Requests functionality
+    let unsubscribeDeliveries = null;
+
+    function loadDeliveryRequests() {
+      const deliveryContainer = document.getElementById("delivery-requests-container");
+      
+      // If listener already exists, unsubscribe first
+      if (unsubscribeDeliveries) {
+        unsubscribeDeliveries();
+      }
+      
+      // Query all medication delivery requests (adjust the query as needed)
+      const q = query(collection(db, "medicationRequests"));
+      
+      // Real-time listener for delivery requests
+      unsubscribeDeliveries = onSnapshot(q, (snapshot) => {
+        deliveryContainer.innerHTML = "";
+        
+        if (snapshot.empty) {
+          deliveryContainer.innerHTML = `
+            <div class="no-deliveries">
+              <i class="fas fa-pills"></i>
+              <h3>No medication delivery requests</h3>
+              <p>There are no medication delivery requests at this time.</p>
+            </div>
+          `;
+          return;
+        }
+        
+        let delay = 0;
+        snapshot.forEach((doc) => {
+          const delivery = doc.data();
+          const deliveryCard = document.createElement("div");
+          deliveryCard.className = "delivery-card";
+          deliveryCard.style.animationDelay = `${delay}ms`;
+          
+          // Format the timestamp
+          const requestedDate = delivery.submittedAt ? 
+            new Date(delivery.submittedAt.seconds * 1000).toLocaleString() : 
+            'Not specified';
+          
+          // Determine status (default to Pending if not set)
+          const status = delivery.status || 'Pending';
+          
+          // Create the delivery card HTML
+          deliveryCard.innerHTML = `
+            <div class="delivery-header">
+              <span class="delivery-patient">${delivery.fullName || 'Unknown Patient'}</span>
+              <span class="delivery-status status-${status.toLowerCase()}">${status}</span>
+            </div>
+            <div class="delivery-details">
+              <p><strong>ID Number:</strong> ${delivery.idNumber || 'Not specified'}</p>
+              <p><strong>Contact:</strong> ${delivery.phone || 'Not specified'} | ${delivery.email || 'No email'}</p>
+              <p><strong>Medication:</strong> ${delivery.medication || 'Not specified'}</p>
+              <p><strong>Address:</strong> ${delivery.homeAddress || ''}, ${delivery.village || ''}, ${delivery.province || ''}, ${delivery.postalCode || ''}</p>
+              <p><strong>Patient Notes:</strong> ${delivery.notes || 'None provided'}</p>
+              <p><strong>Requested On:</strong> ${requestedDate}</p>
+              ${delivery.specialistNotes ? `<p><strong>Your Notes:</strong> ${delivery.specialistNotes}</p>` : ''}
+            </div>
+            <div class="delivery-response" id="response-${doc.id}">
+              <textarea class="response-textarea" placeholder="Add your response or notes here..." rows="3">${delivery.specialistNotes || ''}</textarea>
+            </div>
+            <div class="delivery-actions">
+              ${status === 'Pending' ? `
+                <button class="btn-approve" data-id="${doc.id}"><i class="fas fa-check"></i> Approve</button>
+                <button class="btn-reject" data-id="${doc.id}"><i class="fas fa-times"></i> Reject</button>
+              ` : ''}
+              <button class="btn-update" data-id="${doc.id}"><i class="fas fa-paper-plane"></i> ${status === 'Pending' ? 'Send Response' : 'Update Notes'}</button>
+              ${status === 'Approved' ? `
+                <button class="btn-complete" data-id="${doc.id}"><i class="fas fa-check-circle"></i> Mark as Completed</button>
+              ` : ''}
+            </div>
+          `;
+          
+          deliveryContainer.appendChild(deliveryCard);
+          delay += 100;
+        });
+        
+        // Add event listeners to buttons
+        document.querySelectorAll('.btn-approve').forEach(button => {
+          button.addEventListener('click', async (e) => {
+            const deliveryId = e.target.dataset.id;
+            const notes = document.querySelector(`#response-${deliveryId} .response-textarea`).value;
+            await updateDeliveryStatus(deliveryId, 'Approved', notes);
+          });
+        });
+        
+        document.querySelectorAll('.btn-reject').forEach(button => {
+          button.addEventListener('click', async (e) => {
+            const deliveryId = e.target.dataset.id;
+            const notes = document.querySelector(`#response-${deliveryId} .response-textarea`).value;
+            await updateDeliveryStatus(deliveryId, 'Rejected', notes);
+          });
+        });
+        
+        document.querySelectorAll('.btn-update').forEach(button => {
+          button.addEventListener('click', async (e) => {
+            const deliveryId = e.target.dataset.id;
+            const notes = document.querySelector(`#response-${deliveryId} .response-textarea`).value;
+            if (notes.trim()) {
+              await updateDeliveryNotes(deliveryId, notes);
+              alert('Response updated successfully!');
+            } else {
+              alert('Please enter your response before sending.');
+            }
+          });
+        });
+        
+        document.querySelectorAll('.btn-complete').forEach(button => {
+          button.addEventListener('click', async (e) => {
+            const deliveryId = e.target.dataset.id;
+            await updateDeliveryStatus(deliveryId, 'Completed', 'Delivery completed');
+          });
+        });
+      }, (error) => {
+        console.error("Error loading delivery requests: ", error);
+        deliveryContainer.innerHTML = `
+          <div class="no-deliveries">
+            <i class="fas fa-exclamation-triangle"></i>
+            <h3>Error loading requests</h3>
+            <p>Failed to load medication delivery requests. Please try again later.</p>
+          </div>
+        `;
+      });
+    }
+
+    async function updateDeliveryStatus(deliveryId, status, notes = '') {
+      try {
+        const updateData = {
+          status: status,
+          updatedAt: new Date()
+        };
+        
+        if (notes.trim()) {
+          updateData.specialistNotes = notes;
+        }
+        
+        await updateDoc(doc(db, "medicationRequests", deliveryId), updateData);
+      } catch (error) {
+        console.error("Error updating delivery status: ", error);
+        alert("Failed to update delivery status. Please try again.");
+      }
+    }
+
+    async function updateDeliveryNotes(deliveryId, notes) {
+      try {
+        await updateDoc(doc(db, "medicationRequests", deliveryId), {
+          specialistNotes: notes,
+          updatedAt: new Date()
+        });
+      } catch (error) {
+        console.error("Error updating delivery notes: ", error);
+        throw error;
+      }
+    }
+    
+    // Your existing functions remain the same
+    
+    // Clean up listeners when page unloads
+    window.addEventListener('beforeunload', () => {
+      if (unsubscribeAppointments) {
+        unsubscribeAppointments();
+      }
+      if (unsubscribeDeliveries) {
+        unsubscribeDeliveries();
+      }
     });
     
     // Appointments functionality
@@ -692,6 +1075,7 @@
         });
       });
     }
+
     
     async function updateAppointmentStatus(appointmentId, status) {
       try {
@@ -708,6 +1092,9 @@
     window.addEventListener('beforeunload', () => {
       if (unsubscribeAppointments) {
         unsubscribeAppointments();
+      }
+      if (unsubscribeDeliveries) {
+        unsubscribeDeliveries();
       }
     });
   </script>
