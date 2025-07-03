@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Emergency Contacts | HealthReach</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background-image: url('https://cdn.pixabay.com/photo/2016/03/05/19/02/doctor-1236728_1280.jpg');
+      background-size: cover;
+      background-attachment: fixed;
+      background-position: center;
+      backdrop-filter: blur(4px);
+      padding: 2rem;
+    }
+
+    .card {
+      background-color: rgba(255, 255, 255, 0.95);
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      padding: 30px;
+      max-width: 800px;
+      margin: auto;
+    }
+
+    .card h3 {
+      color: #2c3e50;
+      margin-bottom: 15px;
+      font-size: 28px;
+      text-align: center;
+    }
+
+    .card p {
+      color: #555;
+      font-size: 16px;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .card ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    .card ul li {
+      margin-bottom: 18px;
+    }
+
+    .card ul li strong {
+      display: block;
+      color: #2980b9;
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+
+    .card ul li ul {
+      list-style-type: disc;
+      padding-left: 20px;
+      color: #333;
+    }
+
+    .card ul li ul li {
+      margin-bottom: 6px;
+    }
+
+    button {
+      display: block;
+      margin: 30px auto 0;
+      padding: 12px 24px;
+      font-size: 16px;
+      background-color: #27ae60;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #1e8449;
+    }
+
+    @media (max-width: 600px) {
+      .card {
+        padding: 20px;
+      }
+
+      .card h3 {
+        font-size: 24px;
+      }
+
+      .card p, .card ul li ul li {
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h3>Emergency Contacts</h3>
+    <p>Quick access to essential emergency services in Mthatha.</p>
+    <ul>
+      <li><strong>Ambulance Services:</strong>
+        <ul>
+          <li>Emergency Ambulance & Rescue Service: +27 47 531 1201</li>
+          <li>Gardmed Ambulance Service: +27 82 325 2143</li>
+          <li>St Joseph's EMS: 073 721 1831 / 076 753 0653</li>
+        </ul>
+      </li>
+      <li><strong>Hospitals:</strong>
+        <ul>
+          <li>Mthatha Private Hospital: +27 47 495 0600</li>
+          <li>Herolim Private Hospital: +27 10 026 1422</li>
+          <li>Nelson Mandela Academic Hospital: (via EC Dept of Health)</li>
+        </ul>
+      </li>
+      <li><strong>General Emergency Numbers:</strong>
+        <ul>
+          <li>Ambulance: 10177</li>
+          <li>Police: 10111</li>
+          <li>Disaster Services: 10177</li>
+          <li>SPCA Mthatha: 047 004 0014 / 083 759 0576</li>
+        </ul>
+      </li>
+    </ul>
+    
+  </div>
+</body>
+</html>
