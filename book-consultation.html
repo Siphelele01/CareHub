@@ -89,6 +89,56 @@
       color: #f44336;
       font-weight: bold;
     }
+    
+    /* Doctor profile styles */
+    .doctor-profile {
+      margin-top: 20px;
+      padding: 15px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .doctor-profile h4 {
+      margin-bottom: 10px;
+      color: #333;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 5px;
+    }
+    .doctor-info {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .doctor-info p {
+      margin: 5px 0;
+    }
+    .doctor-info strong {
+      color: #555;
+    }
+    .doctor-profile {
+      margin-top: 20px;
+      padding: 15px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .doctor-profile h4 {
+      margin-bottom: 10px;
+      color: #333;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 5px;
+    }
+    .doctor-info {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .doctor-info p {
+      margin: 5px 0;
+    }
+    .doctor-info strong {
+      color: #555;
+    }
   </style>
 </head>
 <body>
@@ -128,7 +178,7 @@
 
     <div id="booking-result"></div>
     
-    <!-- New Tracking Section -->
+    <!-- Tracking Section -->
     <div class="tracking-section">
       <h3>Check Your Consultation Status</h3>
       <button id="track-consultation-btn" class="tracking-btn">Track Consultation</button>
@@ -145,6 +195,17 @@
           <p><strong>Time:</strong> <span id="consultation-time"></span></p>
           <p><strong>Specialist:</strong> <span id="consultation-specialist"></span></p>
           <p><strong>Last Updated:</strong> <span id="consultation-updated"></span></p>
+          
+          <!-- Doctor Profile Section -->
+          <div id="doctor-profile-container" class="doctor-profile" style="display: none;">
+            <h4>Your Doctor</h4>
+            <div class="doctor-info">
+              <p><strong>Name:</strong> <span id="doctor-name"></span></p>
+              <p><strong>Specialization:</strong> <span id="doctor-specialization"></span></p>
+              <p><strong>Email:</strong> <span id="doctor-email"></span></p>
+              <p><strong>Phone:</strong> <span id="doctor-phone"></span></p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -152,7 +213,16 @@
 
   <script type="module">
     import { db } from "./firebase-config.js";
-    import { collection, addDoc, serverTimestamp, getDoc, doc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+    import { 
+      collection, 
+      addDoc, 
+      serverTimestamp, 
+      getDoc, 
+      doc,
+      query,
+      where,
+      getDocs
+    } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
     const form = document.getElementById("appointment-form");
     const result = document.getElementById("booking-result");
@@ -160,6 +230,7 @@
     const trackingForm = document.getElementById("tracking-form");
     const checkStatusBtn = document.getElementById("check-status-btn");
     const trackingResult = document.getElementById("tracking-result");
+    const doctorProfileContainer = document.getElementById("doctor-profile-container");
 
     // Toggle tracking form
     trackBtn.addEventListener('click', () => {
@@ -182,6 +253,7 @@
         if (!docSnap.exists()) {
           trackingResult.innerHTML = `<p>No consultation found with this reference ID</p>`;
           trackingResult.style.display = "block";
+          doctorProfileContainer.style.display = "none";
           return;
         }
 
@@ -207,14 +279,70 @@
         document.getElementById("consultation-specialist").textContent = appointment.specialistType || 'Not specified';
         document.getElementById("consultation-updated").textContent = updatedAt;
         
+        // 2. Show doctor profile if appointment is confirmed
+        if (appointment.status === 'Confirmed') {
+          // First try to get doctor ID from appointment (if stored)
+          const doctorId = appointment.confirmedBy || appointment.specialistId;
+          
+          if (doctorId) {
+            // Get doctor's profile directly by ID
+            const doctorRef = doc(db, "specialists", doctorId);
+            const doctorSnap = await getDoc(doctorRef);
+            
+            if (doctorSnap.exists()) {
+              const doctor = doctorSnap.data();
+              displayDoctorProfile(doctor);
+            } else {
+              // If direct ID lookup fails, try querying by specialization
+              await findDoctorBySpecialization(appointment.specialistType);
+            }
+          } else {
+            // If no doctor ID, query by specialization
+            await findDoctorBySpecialization(appointment.specialistType);
+          }
+        } else {
+          doctorProfileContainer.style.display = "none";
+        }
+        
         trackingResult.style.display = "block";
       } catch (error) {
         console.error("Error checking status: ", error);
         trackingResult.innerHTML = `<p>Error checking consultation status. Please try again.</p>`;
         trackingResult.style.display = "block";
+        doctorProfileContainer.style.display = "none";
       }
     });
 
+    // Helper function to find doctor by specialization
+    async function findDoctorBySpecialization(specialization) {
+      try {
+        const q = query(
+          collection(db, "specialists"),
+          where("specialization", "==", specialization)
+        );
+        
+        const querySnapshot = await getDocs(q);
+        if (!querySnapshot.empty) {
+          // Get the first matching doctor
+          const doctor = querySnapshot.docs[0].data();
+          displayDoctorProfile(doctor);
+        } else {
+          doctorProfileContainer.style.display = "none";
+        }
+      } catch (error) {
+        console.error("Error finding doctor: ", error);
+        doctorProfileContainer.style.display = "none";
+      }
+    }
+
+    // Helper function to display doctor profile
+    function displayDoctorProfile(doctor) {
+      document.getElementById("doctor-name").textContent = doctor.name || 'Not specified';
+      document.getElementById("doctor-specialization").textContent = doctor.specialization || 'Not specified';
+      document.getElementById("doctor-email").textContent = doctor.email || 'Not specified';
+      document.getElementById("doctor-phone").textContent = doctor.phone || 'Not specified';
+      doctorProfileContainer.style.display = "block";
+    }
     // Submit new appointment form
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
