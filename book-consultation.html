@@ -139,11 +139,29 @@
     .doctor-info strong {
       color: #555;
     }
+    /* Back button styles */
+    .back-button {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background-color: #6c757d;
+      color: white;
+      padding: 8px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      text-decoration: none;
+      font-size: 14px;
+    }
+    .back-button:hover {
+      background-color: #5a6268;
+    }
   </style>
 </head>
 <body>
 
   <div class="form-container">
+    <a href="dashboard.html" class="back-button">← Back to Dashboard</a>
     <h2>Book a Virtual Consultation</h2>
     <form id="appointment-form">
       <label for="fullname">Full Name:</label>
