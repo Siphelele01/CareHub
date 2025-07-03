@@ -17,7 +17,7 @@
       margin: auto;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
-    input, textarea {
+    input, textarea, select {
       width: 100%;
       padding: 10px;
       margin-top: 8px;
@@ -48,6 +48,46 @@
     .error {
       background-color: #f2dede;
       color: #a94442;
+    }
+    
+    /* New styles for tracking section */
+    .tracking-section {
+      margin-top: 30px;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 8px;
+    }
+    .tracking-form {
+      display: none;
+      margin-top: 15px;
+    }
+    .tracking-form.active {
+      display: block;
+    }
+    .tracking-result {
+      margin-top: 15px;
+      padding: 15px;
+      border-radius: 5px;
+      background: #e7f3fe;
+      border-left: 4px solid #2196F3;
+    }
+    .tracking-btn {
+      background-color: #2196F3;
+    }
+    .tracking-btn:hover {
+      background-color: #0b7dda;
+    }
+    .status-pending {
+      color: #FF9800;
+      font-weight: bold;
+    }
+    .status-confirmed {
+      color: #4CAF50;
+      font-weight: bold;
+    }
+    .status-cancelled {
+      color: #f44336;
+      font-weight: bold;
     }
   </style>
 </head>
@@ -87,15 +127,95 @@
     </form>
 
     <div id="booking-result"></div>
+    
+    <!-- New Tracking Section -->
+    <div class="tracking-section">
+      <h3>Check Your Consultation Status</h3>
+      <button id="track-consultation-btn" class="tracking-btn">Track Consultation</button>
+      
+      <div id="tracking-form" class="tracking-form">
+        <label for="reference-id">Enter your Reference ID:</label>
+        <input type="text" id="reference-id" placeholder="Your booking reference ID">
+        <button id="check-status-btn" class="tracking-btn">Check Status</button>
+        
+        <div id="tracking-result" class="tracking-result" style="display: none;">
+          <h4>Consultation Details</h4>
+          <p><strong>Status:</strong> <span id="consultation-status"></span></p>
+          <p><strong>Date:</strong> <span id="consultation-date"></span></p>
+          <p><strong>Time:</strong> <span id="consultation-time"></span></p>
+          <p><strong>Specialist:</strong> <span id="consultation-specialist"></span></p>
+          <p><strong>Last Updated:</strong> <span id="consultation-updated"></span></p>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script type="module">
     import { db } from "./firebase-config.js";
-    import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+    import { collection, addDoc, serverTimestamp, getDoc, doc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
     const form = document.getElementById("appointment-form");
     const result = document.getElementById("booking-result");
+    const trackBtn = document.getElementById("track-consultation-btn");
+    const trackingForm = document.getElementById("tracking-form");
+    const checkStatusBtn = document.getElementById("check-status-btn");
+    const trackingResult = document.getElementById("tracking-result");
 
+    // Toggle tracking form
+    trackBtn.addEventListener('click', () => {
+      trackingForm.classList.toggle('active');
+    });
+
+    // Check consultation status
+    checkStatusBtn.addEventListener('click', async () => {
+      const referenceId = document.getElementById("reference-id").value.trim();
+      
+      if (!referenceId) {
+        alert("Please enter your reference ID");
+        return;
+      }
+
+      try {
+        const docRef = doc(db, "appointments", referenceId);
+        const docSnap = await getDoc(docRef);
+
+        if (!docSnap.exists()) {
+          trackingResult.innerHTML = `<p>No consultation found with this reference ID</p>`;
+          trackingResult.style.display = "block";
+          return;
+        }
+
+        const appointment = docSnap.data();
+        
+        // Format date and time
+        const appointmentDate = appointment.date ? new Date(appointment.date).toLocaleDateString() : 'Not specified';
+        const appointmentTime = appointment.time || 'Not specified';
+        const updatedAt = appointment.updatedAt ? 
+          new Date(appointment.updatedAt.seconds * 1000).toLocaleString() : 
+          (appointment.createdAt ? new Date(appointment.createdAt.seconds * 1000).toLocaleString() : 'Not available');
+        
+        // Set status class based on current status
+        let statusClass = 'status-pending';
+        if (appointment.status === 'Confirmed') statusClass = 'status-confirmed';
+        if (appointment.status === 'Cancelled') statusClass = 'status-cancelled';
+        
+        // Display results
+        document.getElementById("consultation-status").textContent = appointment.status || 'Pending';
+        document.getElementById("consultation-status").className = statusClass;
+        document.getElementById("consultation-date").textContent = appointmentDate;
+        document.getElementById("consultation-time").textContent = appointmentTime;
+        document.getElementById("consultation-specialist").textContent = appointment.specialistType || 'Not specified';
+        document.getElementById("consultation-updated").textContent = updatedAt;
+        
+        trackingResult.style.display = "block";
+      } catch (error) {
+        console.error("Error checking status: ", error);
+        trackingResult.innerHTML = `<p>Error checking consultation status. Please try again.</p>`;
+        trackingResult.style.display = "block";
+      }
+    });
+
+    // Submit new appointment form
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
 
@@ -125,7 +245,7 @@
           <div class="success">
             <strong>Appointment booked successfully!</strong><br>
             Reference ID: ${docRef.id}<br>
-            We'll contact you shortly via email.
+            Save this ID to track your consultation status.
           </div>
         `;
         
